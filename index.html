@@ -16,7 +16,6 @@
         }
         h2,p {
             margin: 20px auto;
-            /*padding: 5px;*/
             width: 500px;
             font-size: 15px;
         }
@@ -34,10 +33,25 @@
 
          
         function formatCurrency(amount) {
-            const roundedNumber = Math.round(number * 100) / 100;
-            return "$" + roundedNumber;
-            
-        }
+            // Round the number to two decimal places
+            const roundedNumber = Math.round(amount * 100) / 100;
+
+            // Convert the rounded number to a string
+            let currencyString = roundedNumber.toString();
+
+            // Split the string into whole and decimal parts
+            const parts = currencyString.split('.');
+
+            // If there is no decimal part, add ".00" to the end
+            if (parts.length === 1) {
+                currencyString += '.00';
+            }
+            // If there is one digit in the decimal part, add a trailing zero
+            else if (parts[1].length === 1) {
+                currencyString += '0';
+            }
+            return "$" + currencyString;
+        }          
 
         // Ask the user for the order quantities
         const numDogs = parseInt(prompt("How many hotdogs do you want?")) || 0;
@@ -60,16 +74,14 @@
         const finalTotal = (subtotal - discount) + tax;
 
         // Display order summary
-        //const orderSummary = document.getElementById("order-summary");
-        //orderSummary = `
-            document.write("<h2>Order Summary</h2>");
-            document.write("<p>Hotdogs: " + numDogs + " x " + formatCurrency(HOTDOG_PRICE) + " = " + formatCurrency(numDogs * HOTDOG_PRICE) +"<p>");
-            document.write("<p>Fries: " + numFries + " x " + formatCurrency(FRIES_PRICE) + " = " + formatCurrency(numFries * FRIES_PRICE)+"<p>");
-            document.write("<p>Sodas: " + numSoda + " x " + formatCurrency(SODA_PRICE) + " = " + formatCurrency(numSoda * SODA_PRICE)+"<p>");
-            document.write("<p>Subtotal: " + formatCurrency(subtotal) + "<p>");
-            document.write("<p>Discount: " + formatCurrency(discount) + "<p>");
-            document.write("<p>Tax: "+ formatCurrency(tax) + "<p>");
-            document.write("<p>Final Total: $" + formatCurrency(finalTotal) + "<p>");
+        document.write("<h2>Order Summary</h2>");
+        document.write("<p>Hotdogs: " + numDogs + " x " + formatCurrency(HOTDOG_PRICE) + " = " + formatCurrency(numDogs * HOTDOG_PRICE) + "<p>");
+        document.write("<p>Fries: " + numFries + " x " + formatCurrency(FRIES_PRICE) + " = " + formatCurrency(numFries * FRIES_PRICE) + "<p>");
+        document.write("<p>Sodas: " + numSoda + " x " + formatCurrency(SODA_PRICE) + " = " + formatCurrency(numSoda * SODA_PRICE) + "<p>");
+        document.write("<p>Subtotal: " + formatCurrency(subtotal) + "<p>");
+        document.write("<p>Discount: " + formatCurrency(discount) + "<p>");
+        document.write("<p>Tax: " + formatCurrency(tax) + "<p>");
+        document.write("<p>Final Total: " + formatCurrency(finalTotal) + "<p>");
         
     </script>
 </body>
