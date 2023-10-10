@@ -9,15 +9,12 @@
             font-family: Arial, sans-serif;
             text-align: center;
         }
-        h1 {
-            border-style: solid;
-            border-width: 1px;
-            border-color: gray;
-        }
-        h2,p {
+        #order-summary {
             margin: 20px auto;
-            width: 500px;
-            font-size: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 300px;
+            font-size: 30px;
         }
     </style>
 </head>
@@ -25,23 +22,31 @@
     <h1>Welcome to Joe's Hotdog Stand</h1>
     
     <script>
-        // Constants for item prices
-        const HOTDOG_PRICE = 3.75;
-        const FRIES_PRICE = 3.00;
-        const SODA_PRICE = 2.50;
-        const TAX_RATE = 6.25;
+        // Associative arrays for item names and prices
+        const itemPrices = {
+            hotdog: 3.75,
+            fries: 3.00,
+            soda: 2.50
+        };
 
-         
+        // Associative array for item quantities
+        const itemQuantities = {
+            hotdog: 0,
+            fries: 0,
+            soda: 0
+        };
+
+        // Function to format currency
         function formatCurrency(amount) {
             // Round the number to two decimal places
             const roundedNumber = Math.round(amount * 100) / 100;
-
+        
             // Convert the rounded number to a string
             let currencyString = roundedNumber.toString();
-
+        
             // Split the string into whole and decimal parts
             const parts = currencyString.split('.');
-
+        
             // If there is no decimal part, add ".00" to the end
             if (parts.length === 1) {
                 currencyString += '.00';
@@ -50,16 +55,20 @@
             else if (parts[1].length === 1) {
                 currencyString += '0';
             }
+        
+            // Add the "$" symbol before the currency string
             return "$" + currencyString;
-        }          
-
-        // Ask the user for the order quantities
-        const numDogs = parseInt(prompt("How many hotdogs do you want?")) || 0;
-        const numFries = parseInt(prompt("How many fries do you want?")) || 0;
-        const numSoda = parseInt(prompt("How many sodas do you want?")) || 0;
+        }
+        // Loop to get item quantities from the user
+        for (const item in itemQuantities) {
+            itemQuantities[item] = parseInt(prompt(`How many ${item}s do you want?`)) || 0;
+        }
 
         // Calculate subtotal
-        const subtotal = (numDogs * HOTDOG_PRICE) + (numFries * FRIES_PRICE) + (numSoda * SODA_PRICE);
+        let subtotal = 0;
+        for (const item in itemQuantities) {
+            subtotal += itemQuantities[item] * itemPrices[item];
+        }
 
         // Calculate discount
         let discount = 0;
@@ -68,21 +77,23 @@
         }
 
         // Calculate tax
-        const tax = (subtotal - discount) * (TAX_RATE / 100);
+        const tax = (subtotal - discount) * (6.25 / 100);
 
         // Calculate final total
         const finalTotal = (subtotal - discount) + tax;
 
         // Display order summary
         document.write("<h2>Order Summary</h2>");
-        document.write("<p>Hotdogs: " + numDogs + " x " + formatCurrency(HOTDOG_PRICE) + " = " + formatCurrency(numDogs * HOTDOG_PRICE) + "<p>");
-        document.write("<p>Fries: " + numFries + " x " + formatCurrency(FRIES_PRICE) + " = " + formatCurrency(numFries * FRIES_PRICE) + "<p>");
-        document.write("<p>Sodas: " + numSoda + " x " + formatCurrency(SODA_PRICE) + " = " + formatCurrency(numSoda * SODA_PRICE) + "<p>");
-        document.write("<p>Subtotal: " + formatCurrency(subtotal) + "<p>");
-        document.write("<p>Discount: " + formatCurrency(discount) + "<p>");
-        document.write("<p>Tax: " + formatCurrency(tax) + "<p>");
-        document.write("<p>Final Total: " + formatCurrency(finalTotal) + "<p>");
-        
+        for (const item in itemQuantities) {
+            const quantity = itemQuantities[item];
+            const price = itemPrices[item];
+            const itemTotal = quantity * price;
+            document.write(`<p>${item.charAt(0).toUpperCase() + item.slice(1)}s: ${quantity} x ${formatCurrency(price)} = ${formatCurrency(itemTotal)}</p>`);
+        }
+        document.write(`<p>Subtotal: ${formatCurrency(subtotal)}</p>`);
+        document.write(`<p>Discount: ${formatCurrency(discount)}</p>`);
+        document.write(`<p>Tax: ${formatCurrency(tax)}</p>`);
+        document.write(`<p>Final Total: ${formatCurrency(finalTotal)}</p>`);
     </script>
 </body>
 </html>
